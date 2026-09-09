@@ -8,10 +8,13 @@ import {
   Inbox,
   Sparkles,
   Menu,
+  ListTodo,
+  CalendarDays,
 } from 'lucide-vue-next';
 import { useListStore } from '~/stores/lists';
 import { useTaskStore } from '~/stores/tasks';
 import type { Task } from '~/types/task';
+import CalendarView from './CalendarView.vue';
 
 const props = defineProps<{
   isLeftSidebarCollapsed: boolean;
@@ -24,6 +27,7 @@ const emit = defineEmits<{
 const listStore = useListStore();
 const taskStore = useTaskStore();
 
+const activeView = ref<'list' | 'calendar'>('list');
 const isCompletedSectionOpen = ref(false);
 const isFormExpanded = ref(false);
 
@@ -97,10 +101,40 @@ function handleToggleTask(task: Task) {
           </h1>
         </div>
       </div>
+
+      <!-- View Switcher (Liste / Calendrier) -->
+      <div v-if="listStore.currentList" class="flex items-center bg-slate-200/60 p-0.5 rounded-xl border border-slate-200/60 text-xs backdrop-blur-sm">
+        <button
+          type="button"
+          :class="[
+            'flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition cursor-pointer',
+            activeView === 'list'
+              ? 'bg-white text-slate-900 shadow-xs font-semibold'
+              : 'text-slate-600 hover:text-slate-900',
+          ]"
+          @click="activeView = 'list'"
+        >
+          <ListTodo class="w-3.5 h-3.5" />
+          <span>Liste</span>
+        </button>
+        <button
+          type="button"
+          :class="[
+            'flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition cursor-pointer',
+            activeView === 'calendar'
+              ? 'bg-white text-slate-900 shadow-xs font-semibold'
+              : 'text-slate-600 hover:text-slate-900',
+          ]"
+          @click="activeView = 'calendar'"
+        >
+          <CalendarDays class="w-3.5 h-3.5" />
+          <span>Calendrier</span>
+        </button>
+      </div>
     </header>
 
     <!-- Main Scrollable Area -->
-    <div class="flex-1 overflow-y-auto p-6 max-w-4xl w-full mx-auto space-y-6">
+    <div class="flex-1 overflow-y-auto p-6 max-w-5xl w-full mx-auto space-y-6">
       <!-- Empty State when no list is selected -->
       <div
         v-if="!listStore.currentList"
@@ -118,6 +152,16 @@ function handleToggleTask(task: Task) {
       </div>
 
       <template v-else>
+        <!-- CALENDAR VIEW -->
+        <CalendarView
+          v-if="activeView === 'calendar'"
+          :tasks="taskStore.tasks"
+          @select-task="handleSelectTask"
+          @toggle-task="handleToggleTask"
+        />
+
+        <!-- LIST VIEW -->
+        <div v-else class="space-y-6">
         <!-- Task Creation Card Form (Apple Light Glassmorphism Card) -->
         <div class="apple-glass-panel rounded-2xl p-4">
           <form class="space-y-3" @submit.prevent="handleCreateTask">
@@ -254,6 +298,7 @@ function handleToggleTask(task: Task) {
             </div>
           </Transition>
         </section>
+        </div>
       </template>
     </div>
   </main>

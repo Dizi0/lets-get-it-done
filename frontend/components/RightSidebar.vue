@@ -76,6 +76,19 @@ const formattedCreatedAt = computed(() => {
   }).format(new Date(props.task.createdAt));
 });
 
+const hasChanges = computed(() => {
+  if (!props.task) return false;
+  const initialShort = props.task.shortDesc || '';
+  const initialLong = props.task.longDesc || '';
+  const initialDue = props.task.dueDate ? props.task.dueDate.slice(0, 10) : '';
+
+  return (
+    editForm.shortDesc.trim() !== initialShort.trim() ||
+    editForm.longDesc.trim() !== initialLong.trim() ||
+    editForm.dueDate !== initialDue
+  );
+});
+
 function startEditing() {
   if (!props.task) return;
   editForm.shortDesc = props.task.shortDesc || '';
@@ -173,32 +186,19 @@ function renderSimpleMarkdown(rawText: string): string {
   >
     <!-- Header -->
     <div class="h-16 flex items-center justify-between px-5 border-b border-slate-200/50 bg-white/40 flex-shrink-0">
-      <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500">
+      <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-600">
         <Tag class="w-4 h-4 text-blue-600" />
-        {{ isEditing ? 'Modifier la tâche' : 'Détail de la tâche' }}
+        Détail & Édition
       </div>
 
-      <div class="flex items-center gap-1.5">
-        <button
-          v-if="!isEditing"
-          type="button"
-          class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-blue-700 hover:text-blue-900 bg-blue-50/80 hover:bg-blue-100 border border-blue-200/70 rounded-xl transition cursor-pointer backdrop-blur-sm shadow-2xs"
-          title="Modifier la tâche"
-          @click="startEditing"
-        >
-          <Edit3 class="w-3.5 h-3.5" />
-          Modifier
-        </button>
-
-        <button
-          type="button"
-          class="p-2 text-slate-400 hover:text-slate-800 rounded-xl hover:bg-white/60 transition cursor-pointer"
-          title="Fermer le panneau"
-          @click="emit('close')"
-        >
-          <X class="w-5 h-5" />
-        </button>
-      </div>
+      <button
+        type="button"
+        class="p-2 text-slate-400 hover:text-slate-800 rounded-xl hover:bg-white/60 transition cursor-pointer"
+        title="Fermer le panneau"
+        @click="emit('close')"
+      >
+        <X class="w-5 h-5" />
+      </button>
     </div>
 
     <!-- Content Body -->
@@ -242,100 +242,30 @@ function renderSimpleMarkdown(rawText: string): string {
         </button>
       </div>
 
-      <!-- VIEW MODE -->
-      <template v-if="!isEditing">
-        <!-- Short Description -->
-        <div>
-          <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">
-            Titre / Description courte
-          </label>
-          <h3 class="text-base font-bold text-slate-900 leading-snug break-words">
-            {{ task.shortDesc }}
-          </h3>
-        </div>
-
-        <!-- Long Description (Markdown render) -->
-        <div>
-          <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-            <FileText class="w-3.5 h-3.5 text-blue-600" />
-            Notes & Description longue (Markdown)
-          </label>
-          <div
-            v-if="task.longDesc"
-            class="apple-glass-card p-4 rounded-2xl text-sm text-slate-700 leading-relaxed break-words"
-            v-html="renderSimpleMarkdown(task.longDesc)"
-          />
-          <div
-            v-else
-            class="p-4 rounded-2xl border border-dashed border-slate-200/80 text-xs text-slate-500 italic flex items-center justify-between bg-white/40"
-          >
-            <span>Aucune note ou description longue renseignée.</span>
-            <button
-              type="button"
-              class="text-blue-600 hover:text-blue-700 font-semibold cursor-pointer"
-              @click="startEditing"
-            >
-              + Ajouter
-            </button>
-          </div>
-        </div>
-
-        <!-- Dates Metadata -->
-        <div class="space-y-3 pt-3 border-t border-slate-200/50 text-xs">
-          <div class="flex items-center justify-between text-slate-700">
-            <span class="flex items-center gap-1.5 text-slate-500">
-              <Calendar class="w-3.5 h-3.5 text-blue-600" />
-              Date d'échéance :
-            </span>
-            <span
-              :class="[
-                'font-semibold px-2.5 py-1 rounded-lg border text-xs backdrop-blur-sm',
-                task.dueDate
-                  ? 'text-blue-700 bg-blue-50/80 border-blue-200/80'
-                  : 'text-slate-500 bg-slate-100/70 border-slate-200/60',
-              ]"
-            >
-              {{ formattedDueDate }}
-            </span>
-          </div>
-
-          <div class="flex items-center justify-between text-slate-700">
-            <span class="flex items-center gap-1.5 text-slate-500">
-              <Clock class="w-3.5 h-3.5 text-slate-400" />
-              Créée le :
-            </span>
-            <span class="font-medium text-slate-500">
-              {{ formattedCreatedAt }}
-            </span>
-          </div>
-        </div>
-      </template>
-
-      <!-- EDIT MODE -->
-      <template v-else>
-        <!-- Short Desc Input -->
-        <div>
-          <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-            Description courte <span class="text-rose-500">*</span>
+      <!-- Direct Interactive Task Editor -->
+      <form class="space-y-5" @submit.prevent="handleSave">
+        <!-- Title / Short Desc -->
+        <div class="space-y-1.5">
+          <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center justify-between">
+            <span>Titre de la tâche <span class="text-rose-500">*</span></span>
+            <span class="text-[10px] text-slate-400 font-normal">{{ editForm.shortDesc.length }}/255</span>
           </label>
           <input
             v-model="editForm.shortDesc"
             type="text"
             maxlength="255"
-            placeholder="Titre de la tâche..."
-            class="w-full px-3.5 py-2.5 apple-glass-input rounded-xl text-sm focus:outline-none"
+            required
+            placeholder="Nom de la tâche..."
+            class="w-full px-3.5 py-2.5 apple-glass-input rounded-xl text-sm font-semibold text-slate-900 focus:outline-none"
           />
-          <div class="text-[10px] text-slate-500 text-right mt-1">
-            {{ editForm.shortDesc.length }}/255
-          </div>
         </div>
 
-        <!-- Long Desc (Markdown Editor + Preview Tabs) -->
-        <div>
-          <div class="flex items-center justify-between mb-1.5">
-            <label class="text-[11px] font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+        <!-- Markdown Notes / Long Description with Tabs -->
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between">
+            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
               <FileText class="w-3.5 h-3.5 text-blue-600" />
-              Notes Markdown
+              Notes & Description (Markdown)
             </label>
             <div class="flex items-center gap-1 bg-slate-200/60 p-0.5 rounded-xl border border-slate-200/60 text-[11px] backdrop-blur-sm">
               <button
@@ -367,91 +297,101 @@ function renderSimpleMarkdown(rawText: string): string {
           <div v-if="activeTab === 'write'">
             <textarea
               v-model="editForm.longDesc"
-              rows="6"
-              placeholder="Détails, notes, listes à puces Markdown, code..."
-              class="w-full px-3.5 py-2.5 apple-glass-input rounded-xl text-xs placeholder-slate-400 font-mono focus:outline-none resize-y"
+              rows="7"
+              placeholder="Rédigez vos notes en Markdown (# Titres, **Gras**, - Listes, `Code`, [ ] Checklists)..."
+              class="w-full px-3.5 py-2.5 apple-glass-input rounded-xl text-xs placeholder-slate-400 font-mono focus:outline-none resize-y leading-relaxed"
             ></textarea>
-            <p class="text-[10px] text-slate-500 mt-1">
-              💡 Supporte les titres (#), le gras (**texte**), le code (`inline`) et les listes (- item).
+            <p class="text-[10px] text-slate-400 mt-1">
+              💡 Supporte les titres (#), le gras (**texte**), le code (`inline`) et les cases à cocher ([ ] ou [x]).
             </p>
           </div>
 
           <!-- Preview Tab -->
           <div
             v-else
-            class="min-h-[140px] p-4 apple-glass-card rounded-2xl text-xs text-slate-700 leading-relaxed break-words"
-            v-html="renderSimpleMarkdown(editForm.longDesc || '*Aucun contenu à prévisualiser*')"
+            class="min-h-[160px] p-4 apple-glass-card rounded-2xl text-xs text-slate-700 leading-relaxed break-words"
+            v-html="renderSimpleMarkdown(editForm.longDesc || '*Aucune note renseignée pour le moment.*')"
           />
         </div>
 
-        <!-- Due Date Picker with quick shortcuts -->
-        <div>
-          <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+        <!-- Due Date Picker & Quick Shortcuts -->
+        <div class="space-y-1.5">
+          <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
             <Calendar class="w-3.5 h-3.5 text-blue-600" />
-            Date d'échéance
+            Date d'échéance <span class="text-rose-500">*</span>
           </label>
           <input
             v-model="editForm.dueDate"
             type="date"
-            class="w-full px-3.5 py-2 apple-glass-input rounded-xl text-xs text-slate-800 focus:outline-none"
+            required
+            class="w-full px-3.5 py-2.5 apple-glass-input rounded-xl text-xs text-slate-800 focus:outline-none"
           />
 
-          <!-- Quick presets -->
-          <div class="flex items-center gap-1.5 mt-2 flex-wrap text-[11px]">
+          <!-- Quick Presets -->
+          <div class="flex items-center gap-1.5 pt-1 flex-wrap text-[11px]">
             <button
               type="button"
-              class="px-2.5 py-1 bg-white/80 hover:bg-white text-slate-700 rounded-lg transition cursor-pointer border border-slate-200/70 shadow-2xs"
+              class="px-2.5 py-1 bg-white/80 hover:bg-white text-slate-700 rounded-lg transition cursor-pointer border border-slate-200/70 shadow-2xs text-xs font-medium"
               @click="setQuickDate(0)"
             >
               Aujourd'hui
             </button>
             <button
               type="button"
-              class="px-2.5 py-1 bg-white/80 hover:bg-white text-slate-700 rounded-lg transition cursor-pointer border border-slate-200/70 shadow-2xs"
+              class="px-2.5 py-1 bg-white/80 hover:bg-white text-slate-700 rounded-lg transition cursor-pointer border border-slate-200/70 shadow-2xs text-xs font-medium"
               @click="setQuickDate(1)"
             >
               Demain
             </button>
             <button
               type="button"
-              class="px-2.5 py-1 bg-white/80 hover:bg-white text-slate-700 rounded-lg transition cursor-pointer border border-slate-200/70 shadow-2xs"
+              class="px-2.5 py-1 bg-white/80 hover:bg-white text-slate-700 rounded-lg transition cursor-pointer border border-slate-200/70 shadow-2xs text-xs font-medium"
               @click="setQuickDate(7)"
             >
               Dans 7 j
             </button>
-            <button
-              v-if="editForm.dueDate"
-              type="button"
-              class="px-2.5 py-1 text-rose-600 hover:text-rose-800 hover:bg-rose-50 rounded-lg transition cursor-pointer"
-              @click="clearDueDate"
-            >
-              Effacer
-            </button>
           </div>
         </div>
 
-        <!-- Edit Action Buttons -->
-        <div class="pt-3 border-t border-slate-200/50 flex items-center gap-2">
+        <!-- Created At & Info Metadata -->
+        <div class="pt-3 border-t border-slate-200/50 flex items-center justify-between text-xs text-slate-500">
+          <span class="flex items-center gap-1.5">
+            <Clock class="w-3.5 h-3.5 text-slate-400" />
+            Créée le :
+          </span>
+          <span class="font-medium text-slate-600">
+            {{ formattedCreatedAt }}
+          </span>
+        </div>
+
+        <!-- Save Actions -->
+        <div class="pt-2 flex items-center gap-2">
           <button
-            type="button"
-            :disabled="isSaving"
-            class="flex-1 flex items-center justify-center gap-1.5 py-2.5 px-4 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 rounded-xl transition cursor-pointer shadow-sm shadow-blue-500/20"
-            @click="handleSave"
+            type="submit"
+            :disabled="isSaving || !hasChanges"
+            :class="[
+              'flex-1 flex items-center justify-center gap-1.5 py-2.5 px-4 text-xs font-semibold rounded-xl transition cursor-pointer shadow-sm',
+              hasChanges
+                ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-500/20 active:scale-95'
+                : 'bg-slate-200/80 text-slate-400 cursor-not-allowed',
+            ]"
           >
             <Save class="w-3.5 h-3.5" />
-            {{ isSaving ? 'Enregistrement...' : 'Enregistrer' }}
+            <span>{{ isSaving ? 'Enregistrement...' : hasChanges ? 'Enregistrer les modifications' : 'À jour' }}</span>
           </button>
 
           <button
+            v-if="hasChanges"
             type="button"
             :disabled="isSaving"
             class="px-3.5 py-2.5 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-white/80 hover:bg-white border border-slate-200/80 disabled:opacity-50 rounded-xl transition cursor-pointer shadow-2xs"
+            title="Rétablir les valeurs initiales"
             @click="cancelEditing"
           >
             <RotateCcw class="w-3.5 h-3.5" />
           </button>
         </div>
-      </template>
+      </form>
     </div>
 
     <!-- Footer Actions (Delete) -->
