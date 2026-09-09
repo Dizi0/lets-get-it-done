@@ -146,9 +146,12 @@ async function confirmDeleteList() {
     </div>
 
     <!-- Task Lists Scrollable Navigation -->
-    <div class="flex-1 overflow-y-auto p-2 space-y-1">
-      <div v-if="listStore.isLoading" class="p-4 text-center text-xs text-slate-500">
-        Chargement des listes...
+    <div class="flex-1 overflow-y-auto p-2 space-y-1.5">
+      <div v-if="listStore.isLoading" class="space-y-2 p-1">
+        <div v-for="i in 3" :key="i" class="h-9 rounded-xl bg-slate-800/60 animate-pulse flex items-center px-3 gap-2.5">
+          <div class="w-4 h-4 rounded bg-slate-700/60"></div>
+          <div v-if="!isCollapsed" class="h-3 w-28 rounded bg-slate-700/60"></div>
+        </div>
       </div>
 
       <div

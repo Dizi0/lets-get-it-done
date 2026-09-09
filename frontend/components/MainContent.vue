@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import {
   Plus,
   Calendar,
@@ -182,8 +182,17 @@ function handleToggleTask(task: Task) {
             </h2>
           </div>
 
-          <div v-if="taskStore.isLoading" class="p-8 text-center text-sm text-slate-500">
-            Chargement des tâches...
+          <div v-if="taskStore.isLoading" class="space-y-2">
+            <div v-for="i in 3" :key="i" class="h-16 rounded-2xl bg-slate-900/60 border border-slate-800/80 animate-pulse flex items-center px-4 justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-5 h-5 rounded-lg bg-slate-800"></div>
+                <div class="space-y-1.5">
+                  <div class="h-3.5 w-48 rounded bg-slate-800"></div>
+                  <div class="h-2.5 w-24 rounded bg-slate-800/60"></div>
+                </div>
+              </div>
+              <div class="h-4 w-16 rounded bg-slate-800/60"></div>
+            </div>
           </div>
 
           <div
