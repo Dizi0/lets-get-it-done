@@ -1,4 +1,4 @@
-﻿import { defineStore } from 'pinia';
+import { defineStore } from 'pinia';
 import type { Task, CreateTaskPayload, UpdateTaskPayload } from '~/types/task';
 import { useAuthStore } from './auth';
 import { useListStore } from './lists';
@@ -27,40 +27,36 @@ export const useTaskStore = defineStore('tasks', () => {
       return;
     }
     const authStore = useAuthStore();
-    const config = useRuntimeConfig();
+    const api = useApi();
+    if (!authStore.accessToken) return;
 
     isLoading.value = true;
     error.value = null;
     try {
-      const data = await $fetch<Task[]>(
-        `${config.public.apiUrl}/api/lists/${listId}/tasks`,
+      const data = await api.fetch<Task[]>(
+        `/api/lists/${listId}/tasks`,
         {
           method: 'GET',
-          headers: { Authorization: `Bearer ${authStore.accessToken}` },
-          credentials: 'include',
         },
       );
       tasks.value = data;
     } catch (err: any) {
-      error.value = err.data?.message || 'Erreur lors du chargement des tâches';
+      error.value = err.data?.message || err.message || 'Erreur lors du chargement des tâches';
     } finally {
       isLoading.value = false;
     }
   }
 
   async function createTask(listId: string, payload: CreateTaskPayload) {
-    const authStore = useAuthStore();
     const listStore = useListStore();
-    const config = useRuntimeConfig();
+    const api = useApi();
 
     try {
-      const newTask = await $fetch<Task>(
-        `${config.public.apiUrl}/api/lists/${listId}/tasks`,
+      const newTask = await api.fetch<Task>(
+        `/api/lists/${listId}/tasks`,
         {
           method: 'POST',
-          headers: { Authorization: `Bearer ${authStore.accessToken}` },
           body: payload,
-          credentials: 'include',
         },
       );
       // Local optimistic / immediate update
@@ -68,28 +64,25 @@ export const useTaskStore = defineStore('tasks', () => {
       listStore.updateTaskCount(listId, 1);
       return newTask;
     } catch (err: any) {
-      throw new Error(err.data?.message || 'Erreur lors de la création de la tâche');
+      throw new Error(err.data?.message || err.message || 'Erreur lors de la création de la tâche');
     }
   }
 
   async function updateTask(taskId: string, payload: UpdateTaskPayload) {
-    const authStore = useAuthStore();
-    const config = useRuntimeConfig();
+    const api = useApi();
 
     try {
-      const updated = await $fetch<Task>(
-        `${config.public.apiUrl}/api/tasks/${taskId}`,
+      const updated = await api.fetch<Task>(
+        `/api/tasks/${taskId}`,
         {
           method: 'PATCH',
-          headers: { Authorization: `Bearer ${authStore.accessToken}` },
           body: payload,
-          credentials: 'include',
         },
       );
       onTaskUpdated(updated);
       return updated;
     } catch (err: any) {
-      throw new Error(err.data?.message || 'Erreur lors de la mise à jour de la tâche');
+      throw new Error(err.data?.message || err.message || 'Erreur lors de la mise à jour de la tâche');
     }
   }
 
@@ -100,25 +93,22 @@ export const useTaskStore = defineStore('tasks', () => {
   }
 
   async function deleteTask(taskId: string) {
-    const authStore = useAuthStore();
     const listStore = useListStore();
-    const config = useRuntimeConfig();
+    const api = useApi();
 
     const task = tasks.value.find((t) => t.id === taskId);
     const listId = task?.listId;
 
     try {
-      await $fetch(`${config.public.apiUrl}/api/tasks/${taskId}`, {
+      await api.fetch(`/api/tasks/${taskId}`, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${authStore.accessToken}` },
-        credentials: 'include',
       });
       onTaskDeleted(taskId, listId);
       if (listId) {
         listStore.updateTaskCount(listId, -1);
       }
     } catch (err: any) {
-      throw new Error(err.data?.message || 'Erreur lors de la suppression de la tâche');
+      throw new Error(err.data?.message || err.message || 'Erreur lors de la suppression de la tâche');
     }
   }
 

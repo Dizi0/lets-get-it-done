@@ -1,4 +1,4 @@
-﻿import { defineStore } from 'pinia';
+import { defineStore } from 'pinia';
 import type { TaskList, CreateListPayload, UpdateListPayload } from '~/types/list';
 import { useAuthStore } from './auth';
 
@@ -14,16 +14,14 @@ export const useListStore = defineStore('lists', () => {
 
   async function fetchLists() {
     const authStore = useAuthStore();
-    const config = useRuntimeConfig();
+    const api = useApi();
     if (!authStore.accessToken) return;
 
     isLoading.value = true;
     error.value = null;
     try {
-      const data = await $fetch<TaskList[]>(`${config.public.apiUrl}/api/lists`, {
+      const data = await api.fetch<TaskList[]>('/api/lists', {
         method: 'GET',
-        headers: { Authorization: `Bearer ${authStore.accessToken}` },
-        credentials: 'include',
       });
       lists.value = data;
 
@@ -32,39 +30,33 @@ export const useListStore = defineStore('lists', () => {
         currentListId.value = data[0].id;
       }
     } catch (err: any) {
-      error.value = err.data?.message || 'Erreur lors de la récupération des listes';
+      error.value = err.data?.message || err.message || 'Erreur lors de la récupération des listes';
     } finally {
       isLoading.value = false;
     }
   }
 
   async function createList(payload: CreateListPayload) {
-    const authStore = useAuthStore();
-    const config = useRuntimeConfig();
+    const api = useApi();
     try {
-      const newList = await $fetch<TaskList>(`${config.public.apiUrl}/api/lists`, {
+      const newList = await api.fetch<TaskList>('/api/lists', {
         method: 'POST',
-        headers: { Authorization: `Bearer ${authStore.accessToken}` },
         body: payload,
-        credentials: 'include',
       });
       lists.value.unshift({ ...newList, _count: { tasks: 0 } });
       currentListId.value = newList.id;
       return newList;
     } catch (err: any) {
-      throw new Error(err.data?.message || 'Erreur lors de la création de la liste');
+      throw new Error(err.data?.message || err.message || 'Erreur lors de la création de la liste');
     }
   }
 
   async function updateList(id: string, payload: UpdateListPayload) {
-    const authStore = useAuthStore();
-    const config = useRuntimeConfig();
+    const api = useApi();
     try {
-      const updated = await $fetch<TaskList>(`${config.public.apiUrl}/api/lists/${id}`, {
+      const updated = await api.fetch<TaskList>(`/api/lists/${id}`, {
         method: 'PATCH',
-        headers: { Authorization: `Bearer ${authStore.accessToken}` },
         body: payload,
-        credentials: 'include',
       });
       const index = lists.value.findIndex((l) => l.id === id);
       if (index !== -1) {
@@ -72,25 +64,22 @@ export const useListStore = defineStore('lists', () => {
       }
       return updated;
     } catch (err: any) {
-      throw new Error(err.data?.message || 'Erreur lors de la mise à jour de la liste');
+      throw new Error(err.data?.message || err.message || 'Erreur lors de la mise à jour de la liste');
     }
   }
 
   async function deleteList(id: string) {
-    const authStore = useAuthStore();
-    const config = useRuntimeConfig();
+    const api = useApi();
     try {
-      await $fetch(`${config.public.apiUrl}/api/lists/${id}`, {
+      await api.fetch(`/api/lists/${id}`, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${authStore.accessToken}` },
-        credentials: 'include',
       });
       lists.value = lists.value.filter((l) => l.id !== id);
       if (currentListId.value === id) {
         currentListId.value = lists.value.length > 0 ? lists.value[0].id : null;
       }
     } catch (err: any) {
-      throw new Error(err.data?.message || 'Erreur lors de la suppression de la liste');
+      throw new Error(err.data?.message || err.message || 'Erreur lors de la suppression de la liste');
     }
   }
 

@@ -48,11 +48,12 @@ function toggleLeftSidebar() {
 </script>
 
 <template>
-  <div class="relative h-screen w-screen flex overflow-hidden bg-[#07090e] text-slate-100 selection:bg-indigo-500/30 selection:text-indigo-200">
-    <!-- Ambient Apple Light Glows -->
-    <div class="pointer-events-none absolute -top-40 -left-40 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl"></div>
-    <div class="pointer-events-none absolute top-1/3 right-1/4 w-[500px] h-[500px] bg-blue-600/5 rounded-full blur-[120px]"></div>
-    <div class="pointer-events-none absolute -bottom-40 right-0 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl"></div>
+  <div class="relative h-screen w-screen flex overflow-hidden bg-gradient-to-br from-slate-100 via-[#f1f5f9] to-slate-100 text-slate-900 selection:bg-blue-500/20 selection:text-blue-900">
+    <!-- Ambient Apple Light Mesh for Translucent Glass Depth -->
+    <div class="pointer-events-none absolute -top-32 -left-32 w-[550px] h-[550px] bg-sky-200/40 rounded-full blur-[120px]"></div>
+    <div class="pointer-events-none absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-indigo-100/40 rounded-full blur-[140px]"></div>
+    <div class="pointer-events-none absolute -bottom-32 -right-32 w-[550px] h-[550px] bg-amber-100/35 rounded-full blur-[130px]"></div>
+    <div class="pointer-events-none absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-purple-100/30 rounded-full blur-[110px]"></div>
 
     <!-- 1. Left Sidebar (Collapsible) -->
     <LeftSidebar

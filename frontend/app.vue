@@ -9,8 +9,8 @@ if (import.meta.client) {
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-950 text-slate-100 antialiased font-sans">
-    <NuxtLoadingIndicator color="#6366f1" :height="3" />
+  <div class="min-h-screen bg-slate-50 text-slate-900 antialiased font-sans">
+    <NuxtLoadingIndicator color="#2563eb" :height="3" />
     <NuxtPage />
   </div>
 </template>

@@ -33,39 +33,40 @@ async function handleLogin() {
 </script>
 
 <template>
-  <div class="relative min-h-screen flex items-center justify-center p-4 bg-[#07090e] selection:bg-indigo-500/30 selection:text-indigo-200 overflow-hidden">
-    <!-- Ambient Apple Light Glows -->
-    <div class="pointer-events-none absolute -top-40 -left-40 w-[450px] h-[450px] bg-indigo-600/15 rounded-full blur-[130px]"></div>
-    <div class="pointer-events-none absolute -bottom-40 -right-40 w-[450px] h-[450px] bg-blue-600/15 rounded-full blur-[130px]"></div>
+  <div class="relative min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-100 via-[#f1f5f9] to-slate-100 selection:bg-blue-100 selection:text-blue-900 overflow-hidden">
+    <!-- Ambient Apple Light Mesh for Translucent Glass Depth -->
+    <div class="pointer-events-none absolute -top-40 -left-40 w-[500px] h-[500px] bg-sky-200/40 rounded-full blur-[130px]"></div>
+    <div class="pointer-events-none absolute -bottom-40 -right-40 w-[500px] h-[500px] bg-amber-100/35 rounded-full blur-[130px]"></div>
+    <div class="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[450px] bg-indigo-100/35 rounded-full blur-[120px]"></div>
 
     <div class="relative w-full max-w-md z-10">
       <!-- App Brand Header -->
       <div class="text-center mb-8">
-        <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-indigo-700 text-white shadow-xl shadow-indigo-600/30 mb-4 border border-white/15">
+        <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-blue-500 text-white shadow-md shadow-blue-500/25 mb-4">
           <CheckCircle2 class="w-6 h-6" />
         </div>
-        <h1 class="text-2xl font-extrabold tracking-tight text-white">
+        <h1 class="text-2xl font-bold tracking-tight text-slate-900">
           Connexion à TaskFlow
         </h1>
-        <p class="text-xs text-slate-400 mt-1">
+        <p class="text-xs text-slate-500 mt-1">
           Gérez vos tâches et projets en temps réel
         </p>
       </div>
 
-      <!-- Login Glass Card -->
-      <div class="glass-panel rounded-3xl p-8 shadow-2xl border border-white/[0.08]">
+      <!-- Login Apple Glass Card -->
+      <div class="apple-glass-panel rounded-3xl p-8">
         <form class="space-y-4" @submit.prevent="handleLogin">
           <!-- Error Alert -->
           <div
             v-if="errorMessage"
-            class="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs font-medium text-rose-300 backdrop-blur-sm"
+            class="p-3 bg-rose-50/90 border border-rose-200 rounded-xl text-xs font-medium text-rose-700 backdrop-blur-sm"
           >
             {{ errorMessage }}
           </div>
 
           <!-- Email -->
           <div class="space-y-1.5">
-            <label class="block text-xs font-semibold text-slate-300">
+            <label class="block text-xs font-medium text-slate-700">
               Adresse email
             </label>
             <div class="relative">
@@ -75,14 +76,14 @@ async function handleLogin() {
                 type="email"
                 required
                 placeholder="votre.email@exemple.com"
-                class="w-full pl-10 pr-4 py-2.5 glass-input rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none"
+                class="w-full pl-10 pr-4 py-2.5 apple-glass-input rounded-xl text-sm placeholder-slate-400 focus:outline-none"
               />
             </div>
           </div>
 
           <!-- Password -->
           <div class="space-y-1.5">
-            <label class="block text-xs font-semibold text-slate-300">
+            <label class="block text-xs font-medium text-slate-700">
               Mot de passe
             </label>
             <div class="relative">
@@ -92,7 +93,7 @@ async function handleLogin() {
                 type="password"
                 required
                 placeholder="••••••••"
-                class="w-full pl-10 pr-4 py-2.5 glass-input rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none"
+                class="w-full pl-10 pr-4 py-2.5 apple-glass-input rounded-xl text-sm placeholder-slate-400 focus:outline-none"
               />
             </div>
           </div>
@@ -101,7 +102,7 @@ async function handleLogin() {
           <button
             type="submit"
             :disabled="isLoading"
-            class="w-full mt-2 flex items-center justify-center gap-2 py-3 px-4 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-sm font-semibold rounded-xl transition cursor-pointer shadow-lg shadow-indigo-600/30 active:scale-[0.99]"
+            class="w-full mt-2 flex items-center justify-center gap-2 py-3 px-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-sm font-medium rounded-xl transition cursor-pointer shadow-sm shadow-blue-500/25 active:scale-[0.99]"
           >
             <span v-if="!isLoading">Se connecter</span>
             <span v-else>Connexion en cours...</span>
@@ -110,9 +111,9 @@ async function handleLogin() {
         </form>
 
         <!-- Footer link to register -->
-        <div class="mt-6 pt-6 border-t border-white/[0.06] text-center text-xs text-slate-400">
+        <div class="mt-6 pt-6 border-t border-slate-200/50 text-center text-xs text-slate-500">
           Pas encore de compte ?
-          <NuxtLink to="/register" class="font-bold text-indigo-400 hover:text-indigo-300 ml-1 transition">
+          <NuxtLink to="/register" class="font-semibold text-blue-600 hover:text-blue-700 ml-1 transition">
             Créer un compte
           </NuxtLink>
         </div>

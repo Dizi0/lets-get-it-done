@@ -31,22 +31,22 @@ const isOverdue = computed(() => {
 <template>
   <div
     :class="[
-      'group relative flex items-start gap-3.5 p-4 rounded-2xl border transition-all duration-200 cursor-pointer select-none',
+      'group relative flex items-start gap-3.5 p-4 rounded-2xl transition-all duration-200 cursor-pointer select-none',
       isSelected
-        ? 'bg-indigo-950/40 border-indigo-500/50 shadow-lg shadow-indigo-950/60 ring-1 ring-indigo-500/30'
-        : 'glass-card hover:border-slate-600/60',
-      task.isCompleted ? 'opacity-55 hover:opacity-80 bg-slate-900/30' : '',
+        ? 'bg-blue-50/90 border border-blue-400/80 shadow-md ring-2 ring-blue-500/20 backdrop-blur-xl'
+        : 'apple-glass-card',
+      task.isCompleted ? 'opacity-65' : '',
     ]"
     @click="emit('select', task)"
   >
-    <!-- Toggle Checkbox Button -->
+    <!-- Toggle Checkbox Button (Apple Reminders style) -->
     <button
       type="button"
       :class="[
-        'mt-0.5 w-5 h-5 rounded-full flex items-center justify-center border transition-all duration-200 flex-shrink-0 cursor-pointer',
+        'mt-0.5 w-5 h-5 rounded-full flex items-center justify-center border transition-all duration-150 flex-shrink-0 cursor-pointer shadow-2xs',
         task.isCompleted
-          ? 'bg-emerald-500 border-emerald-400 text-slate-950 shadow-sm shadow-emerald-500/30'
-          : 'border-slate-600/80 hover:border-indigo-400 bg-slate-950/40 hover:bg-indigo-500/10',
+          ? 'bg-emerald-600 border-emerald-600 text-white'
+          : 'border-slate-300 hover:border-blue-500 bg-white/90 hover:bg-blue-50',
       ]"
       @click.stop="emit('toggle', task)"
     >
@@ -58,8 +58,8 @@ const isOverdue = computed(() => {
       <div class="flex items-center gap-2">
         <h4
           :class="[
-            'text-sm font-semibold tracking-tight transition break-words',
-            task.isCompleted ? 'line-through text-slate-400' : 'text-slate-100 group-hover:text-indigo-200',
+            'text-sm font-medium tracking-tight transition break-words',
+            task.isCompleted ? 'line-through text-slate-400' : 'text-slate-900 group-hover:text-blue-600',
           ]"
         >
           {{ task.shortDesc }}
@@ -68,7 +68,7 @@ const isOverdue = computed(() => {
 
       <p
         v-if="task.longDesc"
-        class="text-xs text-slate-400 line-clamp-1 mt-1 font-normal"
+        class="text-xs text-slate-500 line-clamp-1 mt-1 font-normal"
       >
         {{ task.longDesc }}
       </p>
@@ -79,21 +79,21 @@ const isOverdue = computed(() => {
           :class="[
             'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium backdrop-blur-md',
             task.isCompleted
-              ? 'bg-slate-800/60 text-slate-400 border border-slate-700/40'
+              ? 'bg-slate-100/70 text-slate-400 border border-slate-200/60'
               : isOverdue
-              ? 'bg-rose-500/15 text-rose-300 border border-rose-500/30'
-              : 'bg-indigo-500/10 text-indigo-300 border border-indigo-500/20',
+              ? 'bg-rose-50/90 text-rose-700 border border-rose-200/80 font-semibold'
+              : 'bg-slate-100/80 text-slate-600 border border-slate-200/60',
           ]"
         >
           <Calendar class="w-3 h-3" />
           {{ formattedDueDate }}
-          <span v-if="isOverdue" class="font-bold">• Retard</span>
+          <span v-if="isOverdue">• En retard</span>
         </span>
       </div>
     </div>
 
     <!-- Arrow icon -->
-    <div class="self-center text-slate-600 group-hover:text-slate-300 transition-transform group-hover:translate-x-0.5">
+    <div class="self-center text-slate-300 group-hover:text-slate-500 transition-transform group-hover:translate-x-0.5">
       <ChevronRight class="w-4 h-4" />
     </div>
   </div>

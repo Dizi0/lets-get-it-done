@@ -1,4 +1,4 @@
-﻿import { useAuthStore } from '~/stores/auth';
+import { useAuthStore } from '~/stores/auth';
 
 let isRefreshing = false;
 let failedQueue: Array<{
@@ -43,7 +43,13 @@ export function useApi() {
         credentials: 'include',
       });
     } catch (error: any) {
-      if (error?.response?.status === 401 && !options._retry && !request.includes('/auth/login') && !request.includes('/auth/register')) {
+      const status = error?.statusCode || error?.response?.status || error?.status;
+      const isAuthRoute =
+        request.includes('/auth/login') ||
+        request.includes('/auth/register') ||
+        request.includes('/auth/refresh');
+
+      if (status === 401 && !options._retry && !isAuthRoute) {
         if (isRefreshing) {
           return new Promise((resolve, reject) => {
             failedQueue.push({ resolve, reject });
@@ -70,12 +76,14 @@ export function useApi() {
             };
             return await customFetch<T>(request, options);
           } else {
-            throw new Error('Refresh failed');
+            throw new Error('Session expired');
           }
         } catch (refreshErr) {
           processQueue(refreshErr, null);
           authStore.clearAuth();
-          navigateTo('/login');
+          if (import.meta.client) {
+            navigateTo('/login');
+          }
           throw refreshErr;
         } finally {
           isRefreshing = false;

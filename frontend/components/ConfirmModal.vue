@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import { AlertTriangle, X } from 'lucide-vue-next';
 
 const props = withDefaults(
@@ -45,14 +45,14 @@ function onCancel() {
     >
       <div
         v-if="isOpen"
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/30 backdrop-blur-md"
         @click.self="onCancel"
       >
         <div
-          class="relative w-full max-w-md p-6 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl text-slate-100"
+          class="relative w-full max-w-md p-6 apple-glass-panel rounded-3xl text-slate-800"
         >
           <button
-            class="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-slate-100 rounded-lg hover:bg-slate-800 transition"
+            class="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-white/60 transition"
             @click="onCancel"
           >
             <X class="w-5 h-5" />
@@ -61,20 +61,20 @@ function onCancel() {
           <div class="flex items-start gap-4">
             <div
               :class="[
-                'p-3 rounded-xl flex-shrink-0',
+                'p-3 rounded-2xl flex-shrink-0 backdrop-blur-md',
                 danger
-                  ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
-                  : 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20',
+                  ? 'bg-rose-50/90 text-rose-600 border border-rose-200/80'
+                  : 'bg-blue-50/90 text-blue-600 border border-blue-200/80',
               ]"
             >
               <AlertTriangle class="w-6 h-6" />
             </div>
 
             <div class="flex-1 pr-4">
-              <h3 class="text-lg font-bold tracking-tight text-white mb-1.5">
+              <h3 class="text-base font-semibold tracking-tight text-slate-900 mb-1">
                 {{ title }}
               </h3>
-              <p class="text-sm text-slate-300 leading-relaxed">
+              <p class="text-sm text-slate-600 leading-relaxed">
                 {{ message }}
               </p>
             </div>
@@ -83,7 +83,7 @@ function onCancel() {
           <div class="flex items-center justify-end gap-3 mt-6">
             <button
               type="button"
-              class="px-4 py-2 text-sm font-medium text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700/80 rounded-xl transition cursor-pointer"
+              class="px-4 py-2 text-sm font-medium text-slate-700 hover:text-slate-900 bg-white/80 hover:bg-white border border-slate-200/80 rounded-xl transition cursor-pointer shadow-2xs"
               @click="onCancel"
             >
               {{ cancelText }}
@@ -91,10 +91,10 @@ function onCancel() {
             <button
               type="button"
               :class="[
-                'px-4 py-2 text-sm font-semibold rounded-xl transition cursor-pointer shadow-lg',
+                'px-4 py-2 text-sm font-medium rounded-xl transition cursor-pointer shadow-sm shadow-blue-500/20',
                 danger
-                  ? 'bg-rose-600 hover:bg-rose-500 text-white shadow-rose-900/30'
-                  : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-indigo-900/30',
+                  ? 'bg-rose-600 hover:bg-rose-700 text-white'
+                  : 'bg-blue-600 hover:bg-blue-700 text-white',
               ]"
               @click="onConfirm"
             >
