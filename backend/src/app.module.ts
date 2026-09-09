@@ -8,6 +8,7 @@ import { UsersModule } from './modules/users/users.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { ListsModule } from './modules/lists/lists.module.js';
 import { TasksModule } from './modules/tasks/tasks.module.js';
+import { WebsocketModule } from './modules/websocket/websocket.module.js';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard.js';
 
 @Module({
@@ -21,6 +22,7 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard.js';
     AuthModule,
     ListsModule,
     TasksModule,
+    WebsocketModule,
   ],
   controllers: [AppController],
   providers: [
