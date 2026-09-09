@@ -1,4 +1,4 @@
-﻿# Logs
+# Logs
 logs
 *.log
 npm-debug.log*
@@ -56,3 +56,7 @@ Thumbs.db
 # Docker
 docker-data/
 postgres_data/
+
+# Internal scratch / local notes
+scratch/
+
