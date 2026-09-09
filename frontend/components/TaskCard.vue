@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import { Check, Calendar, ChevronRight } from 'lucide-vue-next';
 import type { Task } from '~/types/task';
 
@@ -45,7 +45,7 @@ const isOverdue = computed(() => {
       :class="[
         'mt-0.5 w-5 h-5 rounded-lg flex items-center justify-center border transition flex-shrink-0 cursor-pointer',
         task.isCompleted
-          ? 'bg-emerald-500 border-emerald-500 text-slate-950'
+          ? 'bg-emerald-500 border-emerald-500 text-emerald-950'
           : 'border-slate-700 hover:border-indigo-400 bg-slate-950/60',
       ]"
       @click.stop="emit('toggle', task)"

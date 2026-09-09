@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import { ref } from 'vue';
 import { CheckCircle2, Lock, Mail, ArrowRight } from 'lucide-vue-next';
 import { useAuthStore } from '~/stores/auth';
@@ -37,7 +37,7 @@ async function handleLogin() {
     <div class="w-full max-w-md">
       <!-- App Brand Header -->
       <div class="text-center mb-8">
-        <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-indigo-400 text-white shadow-xl shadow-indigo-600/30 mb-4">
+        <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-indigo-600 text-white shadow-sm mb-4">
           <CheckCircle2 class="w-7 h-7" />
         </div>
         <h1 class="text-2xl font-extrabold tracking-tight text-white">

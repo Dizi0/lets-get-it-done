@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import {
   ListTodo,
   Plus,
@@ -74,10 +74,10 @@ async function confirmDeleteList() {
     <!-- Header -->
     <div class="h-16 flex items-center justify-between px-4 border-b border-slate-800 flex-shrink-0">
       <div v-if="!isCollapsed" class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-400 flex items-center justify-center text-white shadow-md shadow-indigo-500/20">
+        <div class="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-sm">
           <CheckCircle2 class="w-5 h-5" />
         </div>
-        <span class="font-extrabold text-base tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
+        <span class="font-extrabold text-base tracking-tight text-white">
           TaskFlow
         </span>
       </div>
