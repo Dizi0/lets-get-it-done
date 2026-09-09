@@ -1,13 +1,18 @@
-﻿import {
+import {
   Injectable,
   NotFoundException,
+  Optional,
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { CreateTaskDto, UpdateTaskDto } from './dto/create-task.dto.js';
+import { EventsGateway } from '../websocket/events.gateway.js';
 
 @Injectable()
 export class TasksService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Optional() private readonly eventsGateway?: EventsGateway,
+  ) {}
 
   async findAllByList(userId: string, listId: string) {
     // Verify list belongs to user
@@ -55,7 +60,7 @@ export class TasksService {
       throw new NotFoundException(`Task list not found`);
     }
 
-    return this.prisma.task.create({
+    const task = await this.prisma.task.create({
       data: {
         shortDesc: dto.shortDesc.trim(),
         longDesc: dto.longDesc ? dto.longDesc.trim() : null,
@@ -63,11 +68,15 @@ export class TasksService {
         listId,
       },
     });
+
+    this.eventsGateway?.notifyTaskCreated(listId, task);
+
+    return task;
   }
 
   async update(userId: string, taskId: string, dto: UpdateTaskDto) {
     // Ensure task belongs to a list owned by user
-    await this.findOne(userId, taskId);
+    const existingTask = await this.findOne(userId, taskId);
 
     const updateData: Record<string, any> = {};
     if (dto.shortDesc !== undefined) updateData.shortDesc = dto.shortDesc.trim();
@@ -75,10 +84,14 @@ export class TasksService {
     if (dto.dueDate !== undefined) updateData.dueDate = new Date(dto.dueDate);
     if (dto.isCompleted !== undefined) updateData.isCompleted = dto.isCompleted;
 
-    return this.prisma.task.update({
+    const updatedTask = await this.prisma.task.update({
       where: { id: taskId },
       data: updateData,
     });
+
+    this.eventsGateway?.notifyTaskUpdated(existingTask.listId, updatedTask);
+
+    return updatedTask;
   }
 
   async delete(userId: string, taskId: string) {
@@ -87,6 +100,8 @@ export class TasksService {
     await this.prisma.task.delete({
       where: { id: taskId },
     });
+
+    this.eventsGateway?.notifyTaskDeleted(task.listId, task.id);
 
     return {
       message: 'Task deleted successfully',
