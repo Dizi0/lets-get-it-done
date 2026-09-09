@@ -1,10 +1,11 @@
-﻿import { io, Socket } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 import { useAuthStore } from '~/stores/auth';
 import { useListStore } from '~/stores/lists';
 import { useTaskStore } from '~/stores/tasks';
 
 let socketInstance: Socket | null = null;
 let currentJoinedRoom: string | null = null;
+let isConnecting = false;
 
 export function useSocket() {
   const authStore = useAuthStore();
@@ -12,9 +13,20 @@ export function useSocket() {
   const taskStore = useTaskStore();
   const config = useRuntimeConfig();
 
-  function connect() {
-    if (socketInstance?.connected) return socketInstance;
+  function connect(): Socket | null {
+    if (typeof window === 'undefined') return null;
     if (!authStore.accessToken) return null;
+
+    if (socketInstance) {
+      if (socketInstance.connected) {
+        return socketInstance;
+      }
+      if (isConnecting) {
+        return socketInstance;
+      }
+    }
+
+    isConnecting = true;
 
     socketInstance = io(config.public.wsUrl, {
       auth: {
@@ -22,38 +34,39 @@ export function useSocket() {
       },
       transports: ['websocket', 'polling'],
       reconnection: true,
-      reconnectionAttempts: 10,
-      reconnectionDelay: 1000,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 2000,
+      autoConnect: true,
     });
 
     socketInstance.on('connect', () => {
+      isConnecting = false;
       console.log('⚡ Connected to WebSocket server:', socketInstance?.id);
-      // Join active list room if available
       if (listStore.currentListId) {
         joinRoom(listStore.currentListId);
       }
     });
 
     socketInstance.on('disconnect', (reason) => {
+      isConnecting = false;
       console.log('🔌 WebSocket disconnected:', reason);
       currentJoinedRoom = null;
     });
 
     socketInstance.on('connect_error', async (err) => {
-      console.warn('⚠️ WebSocket auth/connection error:', err.message);
-      // If token expired, try refreshing
-      if (err.message.includes('token') || err.message.includes('auth')) {
+      isConnecting = false;
+      console.warn('⚠️ WebSocket connection notice:', err.message);
+      // Try refreshing access token once if rejected
+      if (authStore.isAuthenticated) {
         const newToken = await authStore.refreshAccessToken();
         if (newToken && socketInstance) {
           socketInstance.auth = { token: newToken };
-          socketInstance.connect();
         }
       }
     });
 
     // Real-time Event Subscriptions
     socketInstance.on('task:created', (task) => {
-      console.log('📥 Real-time event [task:created]:', task);
       taskStore.onTaskCreated(task);
       if (task.listId) {
         listStore.updateTaskCount(task.listId, 1);
@@ -61,17 +74,14 @@ export function useSocket() {
     });
 
     socketInstance.on('task:updated', (task) => {
-      console.log('📥 Real-time event [task:updated]:', task);
       taskStore.onTaskUpdated(task);
     });
 
     socketInstance.on('task:completed', (task) => {
-      console.log('📥 Real-time event [task:completed]:', task);
       taskStore.onTaskUpdated(task);
     });
 
     socketInstance.on('task:deleted', (data: { taskId: string; listId: string }) => {
-      console.log('📥 Real-time event [task:deleted]:', data);
       taskStore.onTaskDeleted(data.taskId, data.listId);
       if (data.listId) {
         listStore.updateTaskCount(data.listId, -1);
@@ -82,24 +92,25 @@ export function useSocket() {
   }
 
   function joinRoom(listId: string) {
+    if (!listId) return;
     if (!socketInstance || !socketInstance.connected) {
       connect();
     }
     if (currentJoinedRoom === listId) return;
 
-    if (currentJoinedRoom) {
+    if (currentJoinedRoom && socketInstance?.connected) {
       leaveRoom(currentJoinedRoom);
     }
 
-    socketInstance?.emit('joinList', { listId });
-    currentJoinedRoom = listId;
-    console.log(`📡 Subscribed to WebSocket room: list:${listId}`);
+    if (socketInstance?.connected) {
+      socketInstance.emit('joinList', { listId });
+      currentJoinedRoom = listId;
+    }
   }
 
   function leaveRoom(listId: string) {
-    if (socketInstance?.connected) {
+    if (socketInstance?.connected && listId) {
       socketInstance.emit('leaveList', { listId });
-      console.log(`📡 Left WebSocket room: list:${listId}`);
     }
     if (currentJoinedRoom === listId) {
       currentJoinedRoom = null;
@@ -111,7 +122,7 @@ export function useSocket() {
       socketInstance.disconnect();
       socketInstance = null;
       currentJoinedRoom = null;
-      console.log('🔌 WebSocket disconnected cleanly');
+      isConnecting = false;
     }
   }
 

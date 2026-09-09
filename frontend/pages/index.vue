@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import { onMounted, watch } from 'vue';
 import { useAuthStore } from '~/stores/auth';
 import { useListStore } from '~/stores/lists';
@@ -18,6 +18,10 @@ const isLeftSidebarCollapsed = ref(false);
 onMounted(async () => {
   await listStore.fetchLists();
   socket.connect();
+});
+
+onUnmounted(() => {
+  socket.disconnect();
 });
 
 // Watch current list changes to load tasks and subscribe to real-time room
