@@ -33,12 +33,16 @@ async function handleLogin() {
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center p-4 bg-slate-950 selection:bg-indigo-500/30 selection:text-indigo-200">
-    <div class="w-full max-w-md">
+  <div class="relative min-h-screen flex items-center justify-center p-4 bg-[#07090e] selection:bg-indigo-500/30 selection:text-indigo-200 overflow-hidden">
+    <!-- Ambient Apple Light Glows -->
+    <div class="pointer-events-none absolute -top-40 -left-40 w-[450px] h-[450px] bg-indigo-600/15 rounded-full blur-[130px]"></div>
+    <div class="pointer-events-none absolute -bottom-40 -right-40 w-[450px] h-[450px] bg-blue-600/15 rounded-full blur-[130px]"></div>
+
+    <div class="relative w-full max-w-md z-10">
       <!-- App Brand Header -->
       <div class="text-center mb-8">
-        <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-indigo-600 text-white shadow-sm mb-4">
-          <CheckCircle2 class="w-7 h-7" />
+        <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-indigo-700 text-white shadow-xl shadow-indigo-600/30 mb-4 border border-white/15">
+          <CheckCircle2 class="w-6 h-6" />
         </div>
         <h1 class="text-2xl font-extrabold tracking-tight text-white">
           Connexion à TaskFlow
@@ -48,13 +52,13 @@ async function handleLogin() {
         </p>
       </div>
 
-      <!-- Login Card -->
-      <div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-8 shadow-2xl backdrop-blur-xl">
+      <!-- Login Glass Card -->
+      <div class="glass-panel rounded-3xl p-8 shadow-2xl border border-white/[0.08]">
         <form class="space-y-4" @submit.prevent="handleLogin">
           <!-- Error Alert -->
           <div
             v-if="errorMessage"
-            class="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs font-medium text-rose-300"
+            class="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs font-medium text-rose-300 backdrop-blur-sm"
           >
             {{ errorMessage }}
           </div>
@@ -65,13 +69,13 @@ async function handleLogin() {
               Adresse email
             </label>
             <div class="relative">
-              <Mail class="absolute left-3.5 top-3 w-4 h-4 text-slate-500" />
+              <Mail class="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
               <input
                 v-model="email"
                 type="email"
                 required
                 placeholder="votre.email@exemple.com"
-                class="w-full pl-10 pr-4 py-2.5 bg-slate-950/80 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition"
+                class="w-full pl-10 pr-4 py-2.5 glass-input rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none"
               />
             </div>
           </div>
@@ -82,13 +86,13 @@ async function handleLogin() {
               Mot de passe
             </label>
             <div class="relative">
-              <Lock class="absolute left-3.5 top-3 w-4 h-4 text-slate-500" />
+              <Lock class="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
               <input
                 v-model="password"
                 type="password"
                 required
                 placeholder="••••••••"
-                class="w-full pl-10 pr-4 py-2.5 bg-slate-950/80 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition"
+                class="w-full pl-10 pr-4 py-2.5 glass-input rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none"
               />
             </div>
           </div>
@@ -97,7 +101,7 @@ async function handleLogin() {
           <button
             type="submit"
             :disabled="isLoading"
-            class="w-full mt-2 flex items-center justify-center gap-2 py-3 px-4 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-sm font-bold rounded-xl transition cursor-pointer shadow-lg shadow-indigo-600/30"
+            class="w-full mt-2 flex items-center justify-center gap-2 py-3 px-4 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-sm font-semibold rounded-xl transition cursor-pointer shadow-lg shadow-indigo-600/30 active:scale-[0.99]"
           >
             <span v-if="!isLoading">Se connecter</span>
             <span v-else>Connexion en cours...</span>
@@ -106,7 +110,7 @@ async function handleLogin() {
         </form>
 
         <!-- Footer link to register -->
-        <div class="mt-6 pt-6 border-t border-slate-800/80 text-center text-xs text-slate-400">
+        <div class="mt-6 pt-6 border-t border-white/[0.06] text-center text-xs text-slate-400">
           Pas encore de compte ?
           <NuxtLink to="/register" class="font-bold text-indigo-400 hover:text-indigo-300 ml-1 transition">
             Créer un compte

@@ -48,7 +48,12 @@ function toggleLeftSidebar() {
 </script>
 
 <template>
-  <div class="h-screen w-screen flex overflow-hidden bg-slate-950 text-slate-100 selection:bg-indigo-500/30 selection:text-indigo-200">
+  <div class="relative h-screen w-screen flex overflow-hidden bg-[#07090e] text-slate-100 selection:bg-indigo-500/30 selection:text-indigo-200">
+    <!-- Ambient Apple Light Glows -->
+    <div class="pointer-events-none absolute -top-40 -left-40 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl"></div>
+    <div class="pointer-events-none absolute top-1/3 right-1/4 w-[500px] h-[500px] bg-blue-600/5 rounded-full blur-[120px]"></div>
+    <div class="pointer-events-none absolute -bottom-40 right-0 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl"></div>
+
     <!-- 1. Left Sidebar (Collapsible) -->
     <LeftSidebar
       :is-collapsed="isLeftSidebarCollapsed"

@@ -169,20 +169,20 @@ function renderSimpleMarkdown(rawText: string): string {
 <template>
   <aside
     v-if="task"
-    class="w-80 md:w-[420px] h-full flex flex-col bg-slate-900 border-l border-slate-800 transition-all duration-300 z-20 flex-shrink-0 shadow-2xl"
+    class="w-80 md:w-[420px] h-full flex flex-col glass-panel border-l border-white/[0.06] transition-all duration-300 z-20 flex-shrink-0 shadow-2xl"
   >
     <!-- Header -->
-    <div class="h-16 flex items-center justify-between px-5 border-b border-slate-800 flex-shrink-0">
+    <div class="h-16 flex items-center justify-between px-5 border-b border-white/[0.06] flex-shrink-0">
       <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
         <Tag class="w-4 h-4 text-indigo-400" />
         {{ isEditing ? 'Modifier la tâche' : 'Détail de la tâche' }}
       </div>
 
-      <div class="flex items-center gap-1">
+      <div class="flex items-center gap-1.5">
         <button
           v-if="!isEditing"
           type="button"
-          class="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-indigo-300 hover:text-white bg-indigo-500/10 hover:bg-indigo-600/30 border border-indigo-500/20 rounded-lg transition cursor-pointer"
+          class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-indigo-300 hover:text-white bg-indigo-500/10 hover:bg-indigo-600/30 border border-indigo-500/20 rounded-xl transition cursor-pointer backdrop-blur-sm"
           title="Modifier la tâche"
           @click="startEditing"
         >
@@ -192,7 +192,7 @@ function renderSimpleMarkdown(rawText: string): string {
 
         <button
           type="button"
-          class="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 transition cursor-pointer"
+          class="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-white/[0.06] transition cursor-pointer"
           title="Fermer le panneau"
           @click="emit('close')"
         >
@@ -213,12 +213,12 @@ function renderSimpleMarkdown(rawText: string): string {
       </div>
 
       <!-- Status Badge & Quick Action -->
-      <div class="flex items-center justify-between gap-3 p-3 bg-slate-950/60 rounded-xl border border-slate-800">
-        <div class="flex items-center gap-2">
+      <div class="glass-card flex items-center justify-between gap-3 p-3 rounded-2xl">
+        <div class="flex items-center gap-2.5">
           <span
             :class="[
               'w-2.5 h-2.5 rounded-full',
-              task.isCompleted ? 'bg-emerald-500' : 'bg-amber-500',
+              task.isCompleted ? 'bg-emerald-500 shadow-sm shadow-emerald-500/50' : 'bg-amber-500 shadow-sm shadow-amber-500/50',
             ]"
           />
           <span class="text-xs font-semibold text-slate-200">
@@ -229,9 +229,9 @@ function renderSimpleMarkdown(rawText: string): string {
         <button
           type="button"
           :class="[
-            'px-3 py-1 text-xs font-semibold rounded-lg transition cursor-pointer flex items-center gap-1.5',
+            'px-3 py-1 text-xs font-semibold rounded-xl transition cursor-pointer flex items-center gap-1.5',
             task.isCompleted
-              ? 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+              ? 'bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 border border-white/[0.06]'
               : 'bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30',
           ]"
           @click="handleToggleStatus"
@@ -262,12 +262,12 @@ function renderSimpleMarkdown(rawText: string): string {
           </label>
           <div
             v-if="task.longDesc"
-            class="p-3.5 bg-slate-950/50 rounded-xl border border-slate-800/80 text-sm text-slate-300 leading-relaxed break-words"
+            class="glass-card p-4 rounded-2xl text-sm text-slate-300 leading-relaxed break-words"
             v-html="renderSimpleMarkdown(task.longDesc)"
           />
           <div
             v-else
-            class="p-3.5 bg-slate-950/30 rounded-xl border border-dashed border-slate-800/80 text-xs text-slate-500 italic flex items-center justify-between"
+            class="p-4 rounded-2xl border border-dashed border-white/10 text-xs text-slate-500 italic flex items-center justify-between bg-slate-950/20"
           >
             <span>Aucune note ou description longue renseignée.</span>
             <button
@@ -281,7 +281,7 @@ function renderSimpleMarkdown(rawText: string): string {
         </div>
 
         <!-- Dates Metadata -->
-        <div class="space-y-3 pt-2 border-t border-slate-800/80 text-xs">
+        <div class="space-y-3 pt-3 border-t border-white/[0.06] text-xs">
           <div class="flex items-center justify-between text-slate-300">
             <span class="flex items-center gap-1.5 text-slate-400">
               <Calendar class="w-3.5 h-3.5 text-indigo-400" />
@@ -289,7 +289,7 @@ function renderSimpleMarkdown(rawText: string): string {
             </span>
             <span
               :class="[
-                'font-semibold px-2.5 py-1 rounded-md border text-xs',
+                'font-semibold px-2.5 py-1 rounded-lg border text-xs backdrop-blur-sm',
                 task.dueDate
                   ? 'text-indigo-200 bg-indigo-500/10 border-indigo-500/20'
                   : 'text-slate-500 bg-slate-800/40 border-slate-800',
@@ -323,7 +323,7 @@ function renderSimpleMarkdown(rawText: string): string {
             type="text"
             maxlength="255"
             placeholder="Titre de la tâche..."
-            class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+            class="w-full px-3.5 py-2.5 glass-input rounded-xl text-sm text-white focus:outline-none"
           />
           <div class="text-[10px] text-slate-500 text-right mt-1">
             {{ editForm.shortDesc.length }}/255
@@ -337,7 +337,7 @@ function renderSimpleMarkdown(rawText: string): string {
               <FileText class="w-3.5 h-3.5 text-indigo-400" />
               Notes Markdown
             </label>
-            <div class="flex items-center gap-1 bg-slate-950 p-0.5 rounded-lg border border-slate-800 text-[11px]">
+            <div class="flex items-center gap-1 bg-slate-950/80 p-0.5 rounded-lg border border-white/[0.08] text-[11px]">
               <button
                 type="button"
                 :class="[
@@ -369,7 +369,7 @@ function renderSimpleMarkdown(rawText: string): string {
               v-model="editForm.longDesc"
               rows="6"
               placeholder="Détails, notes, listes à puces Markdown, code..."
-              class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition resize-y"
+              class="w-full px-3.5 py-2.5 glass-input rounded-xl text-xs text-white placeholder-slate-500 font-mono focus:outline-none resize-y"
             ></textarea>
             <p class="text-[10px] text-slate-500 mt-1">
               💡 Supporte les titres (#), le gras (**texte**), le code (`inline`) et les listes (- item).
@@ -379,7 +379,7 @@ function renderSimpleMarkdown(rawText: string): string {
           <!-- Preview Tab -->
           <div
             v-else
-            class="min-h-[140px] p-3.5 bg-slate-950/70 border border-slate-800 rounded-xl text-sm text-slate-300 leading-relaxed break-words"
+            class="min-h-[140px] p-4 glass-card rounded-2xl text-xs text-slate-300 leading-relaxed break-words"
             v-html="renderSimpleMarkdown(editForm.longDesc || '*Aucun contenu à prévisualiser*')"
           />
         </div>
@@ -393,28 +393,28 @@ function renderSimpleMarkdown(rawText: string): string {
           <input
             v-model="editForm.dueDate"
             type="date"
-            class="w-full px-3.5 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+            class="w-full px-3.5 py-2 glass-input rounded-xl text-xs text-white focus:outline-none"
           />
 
           <!-- Quick presets -->
           <div class="flex items-center gap-1.5 mt-2 flex-wrap text-[11px]">
             <button
               type="button"
-              class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-md transition cursor-pointer"
+              class="px-2.5 py-1 bg-white/[0.06] hover:bg-white/[0.12] text-slate-300 rounded-lg transition cursor-pointer"
               @click="setQuickDate(0)"
             >
               Aujourd'hui
             </button>
             <button
               type="button"
-              class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-md transition cursor-pointer"
+              class="px-2.5 py-1 bg-white/[0.06] hover:bg-white/[0.12] text-slate-300 rounded-lg transition cursor-pointer"
               @click="setQuickDate(1)"
             >
               Demain
             </button>
             <button
               type="button"
-              class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-md transition cursor-pointer"
+              class="px-2.5 py-1 bg-white/[0.06] hover:bg-white/[0.12] text-slate-300 rounded-lg transition cursor-pointer"
               @click="setQuickDate(7)"
             >
               Dans 7 j
@@ -422,7 +422,7 @@ function renderSimpleMarkdown(rawText: string): string {
             <button
               v-if="editForm.dueDate"
               type="button"
-              class="px-2 py-1 text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 rounded-md transition cursor-pointer"
+              class="px-2.5 py-1 text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 rounded-lg transition cursor-pointer"
               @click="clearDueDate"
             >
               Effacer
@@ -431,7 +431,7 @@ function renderSimpleMarkdown(rawText: string): string {
         </div>
 
         <!-- Edit Action Buttons -->
-        <div class="pt-3 border-t border-slate-800 flex items-center gap-2">
+        <div class="pt-3 border-t border-white/[0.06] flex items-center gap-2">
           <button
             type="button"
             :disabled="isSaving"
@@ -445,7 +445,7 @@ function renderSimpleMarkdown(rawText: string): string {
           <button
             type="button"
             :disabled="isSaving"
-            class="px-3.5 py-2.5 text-xs font-semibold text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 disabled:opacity-50 rounded-xl transition cursor-pointer"
+            class="px-3.5 py-2.5 text-xs font-semibold text-slate-400 hover:text-white bg-white/[0.06] hover:bg-white/[0.12] disabled:opacity-50 rounded-xl transition cursor-pointer"
             @click="cancelEditing"
           >
             <RotateCcw class="w-3.5 h-3.5" />
@@ -455,7 +455,7 @@ function renderSimpleMarkdown(rawText: string): string {
     </div>
 
     <!-- Footer Actions (Delete) -->
-    <div class="p-4 border-t border-slate-800 bg-slate-900/90 flex-shrink-0">
+    <div class="p-4 border-t border-white/[0.06] bg-slate-950/40 backdrop-blur-md flex-shrink-0">
       <button
         type="button"
         class="w-full flex items-center justify-center gap-2 py-2.5 px-4 text-xs font-semibold text-rose-300 hover:text-rose-100 bg-rose-500/10 hover:bg-rose-600/30 border border-rose-500/20 hover:border-rose-500/40 rounded-xl transition cursor-pointer"

@@ -70,29 +70,29 @@ function handleToggleTask(task: Task) {
 </script>
 
 <template>
-  <main class="flex-1 h-full flex flex-col bg-slate-950 overflow-hidden">
-    <!-- Top Bar -->
-    <header class="h-16 flex items-center justify-between px-6 border-b border-slate-800/80 bg-slate-900/50 backdrop-blur-md flex-shrink-0">
+  <main class="flex-1 h-full flex flex-col bg-transparent overflow-hidden">
+    <!-- Top Bar Header -->
+    <header class="h-16 flex items-center justify-between px-6 border-b border-white/[0.06] bg-slate-950/40 backdrop-blur-xl flex-shrink-0">
       <div class="flex items-center gap-3">
         <button
           v-if="isLeftSidebarCollapsed"
           type="button"
-          class="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 transition cursor-pointer"
+          class="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-white/[0.06] transition cursor-pointer"
           @click="emit('toggleLeftSidebar')"
         >
           <Menu class="w-5 h-5" />
         </button>
 
         <div v-if="listStore.currentList">
-          <h1 class="text-lg font-extrabold text-white tracking-tight flex items-center gap-2">
+          <h1 class="text-base font-bold text-white tracking-tight flex items-center gap-2">
             {{ listStore.currentList.title }}
           </h1>
-          <p class="text-xs text-slate-400 font-medium">
+          <p class="text-[11px] text-slate-400 font-medium">
             {{ taskStore.activeTasks.length }} active(s) • {{ taskStore.completedTasks.length }} terminée(s)
           </p>
         </div>
         <div v-else>
-          <h1 class="text-lg font-bold text-slate-400">
+          <h1 class="text-sm font-semibold text-slate-400">
             Aucune liste sélectionnée
           </h1>
         </div>
@@ -104,29 +104,29 @@ function handleToggleTask(task: Task) {
       <!-- Empty State when no list is selected -->
       <div
         v-if="!listStore.currentList"
-        class="h-96 flex flex-col items-center justify-center text-center p-8 border-2 border-dashed border-slate-800 rounded-3xl"
+        class="h-96 flex flex-col items-center justify-center text-center p-8 border border-dashed border-white/10 rounded-3xl bg-slate-900/20 backdrop-blur-sm"
       >
-        <div class="p-4 bg-indigo-500/10 text-indigo-400 rounded-2xl mb-4">
-          <Inbox class="w-10 h-10" />
+        <div class="p-4 bg-indigo-500/10 text-indigo-400 rounded-2xl mb-4 border border-indigo-500/20 shadow-lg shadow-indigo-950/50">
+          <Inbox class="w-8 h-8" />
         </div>
-        <h2 class="text-lg font-bold text-white mb-2">
+        <h2 class="text-base font-bold text-white mb-1.5">
           Sélectionnez une liste
         </h2>
-        <p class="text-sm text-slate-400 max-w-sm">
+        <p class="text-xs text-slate-400 max-w-sm">
           Choisissez une liste dans la barre latérale ou créez-en une nouvelle pour gérer vos tâches.
         </p>
       </div>
 
       <template v-else>
-        <!-- Task Creation Card Form -->
-        <div class="bg-slate-900/80 border border-slate-800/90 rounded-2xl p-4 shadow-xl backdrop-blur-sm">
+        <!-- Task Creation Card Form (Apple Glassmorphism) -->
+        <div class="glass-card rounded-2xl p-4 shadow-xl">
           <form class="space-y-3" @submit.prevent="handleCreateTask">
             <div class="flex items-center gap-3">
               <input
                 v-model="shortDesc"
                 type="text"
                 placeholder="Ajouter une tâche... (Description courte obligatoire)"
-                class="flex-1 bg-slate-950/80 border border-slate-700/80 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition"
+                class="flex-1 glass-input rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none"
                 @focus="isFormExpanded = true"
               />
 
@@ -134,14 +134,14 @@ function handleToggleTask(task: Task) {
                 <input
                   v-model="dueDate"
                   type="date"
-                  class="bg-slate-950/80 border border-slate-700/80 rounded-xl px-3 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 transition"
+                  class="glass-input rounded-xl px-3 py-2.5 text-xs text-slate-200 focus:outline-none"
                   title="Date d'échéance"
                 />
 
                 <button
                   type="submit"
                   :disabled="!shortDesc.trim() || isSubmitting"
-                  class="flex items-center gap-1.5 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-xs font-bold rounded-xl transition cursor-pointer shadow-lg shadow-indigo-600/30"
+                  class="flex items-center gap-1.5 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-xs font-semibold rounded-xl transition cursor-pointer shadow-lg shadow-indigo-600/30"
                 >
                   <Plus class="w-4 h-4" />
                   <span>Ajouter</span>
@@ -158,12 +158,12 @@ function handleToggleTask(task: Task) {
               leave-from-class="opacity-100 translate-y-0"
               leave-to-class="opacity-0 -translate-y-1"
             >
-              <div v-if="isFormExpanded" class="space-y-2 pt-2 border-t border-slate-800/60">
+              <div v-if="isFormExpanded" class="space-y-2 pt-2 border-t border-white/[0.06]">
                 <textarea
                   v-model="longDesc"
                   rows="2"
-                  placeholder="Description longue (optionnel)..."
-                  class="w-full bg-slate-950/80 border border-slate-700/80 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition"
+                  placeholder="Notes, détails ou Markdown (optionnel)..."
+                  class="w-full glass-input rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none resize-none font-mono"
                 />
               </div>
             </Transition>
@@ -182,22 +182,23 @@ function handleToggleTask(task: Task) {
             </h2>
           </div>
 
-          <div v-if="taskStore.isLoading" class="space-y-2">
-            <div v-for="i in 3" :key="i" class="h-16 rounded-2xl bg-slate-900/60 border border-slate-800/80 animate-pulse flex items-center px-4 justify-between">
+          <!-- Apple Premium Shimmer Skeleton for Tasks -->
+          <div v-if="taskStore.isLoading" class="space-y-2.5">
+            <div v-for="i in 3" :key="i" class="h-20 rounded-2xl skeleton-shimmer border border-white/[0.04] flex items-center px-4 justify-between">
               <div class="flex items-center gap-3">
-                <div class="w-5 h-5 rounded-lg bg-slate-800"></div>
-                <div class="space-y-1.5">
-                  <div class="h-3.5 w-48 rounded bg-slate-800"></div>
-                  <div class="h-2.5 w-24 rounded bg-slate-800/60"></div>
+                <div class="w-5 h-5 rounded-full bg-white/[0.08]"></div>
+                <div class="space-y-2">
+                  <div class="h-3.5 w-56 rounded-md bg-white/[0.08]"></div>
+                  <div class="h-2.5 w-28 rounded-md bg-white/[0.05]"></div>
                 </div>
               </div>
-              <div class="h-4 w-16 rounded bg-slate-800/60"></div>
+              <div class="h-5 w-20 rounded-full bg-white/[0.05]"></div>
             </div>
           </div>
 
           <div
             v-else-if="taskStore.activeTasks.length === 0"
-            class="p-8 text-center border border-dashed border-slate-800/80 rounded-2xl text-sm text-slate-500"
+            class="p-8 text-center border border-dashed border-white/10 rounded-2xl text-xs text-slate-400 bg-slate-900/10"
           >
             Toutes les tâches actives sont terminées ! ✨
           </div>
