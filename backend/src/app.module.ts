@@ -6,6 +6,8 @@ import { AppService } from './app.service.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 import { UsersModule } from './modules/users/users.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
+import { ListsModule } from './modules/lists/lists.module.js';
+import { TasksModule } from './modules/tasks/tasks.module.js';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard.js';
 
 @Module({
@@ -17,6 +19,8 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard.js';
     PrismaModule,
     UsersModule,
     AuthModule,
+    ListsModule,
+    TasksModule,
   ],
   controllers: [AppController],
   providers: [
