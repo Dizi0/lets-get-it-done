@@ -1,4 +1,4 @@
-﻿import {
+import {
   WebSocketGateway,
   WebSocketServer,
   SubscribeMessage,
@@ -75,7 +75,7 @@ export class EventsGateway
       };
 
       this.logger.log(`Client authenticated & connected: ${client.id} (user: ${payload.email})`);
-    } catch (error) {
+    } catch {
       this.logger.warn(`Connection rejected: invalid JWT token for socket ${client.id}`);
       client.disconnect();
     }
