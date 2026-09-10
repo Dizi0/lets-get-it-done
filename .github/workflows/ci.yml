@@ -39,7 +39,7 @@ jobs:
 
       - name: Install backend dependencies
         working-directory: ./backend
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Generate Prisma Client & Migrate
         working-directory: ./backend
@@ -86,7 +86,7 @@ jobs:
 
       - name: Install frontend dependencies
         working-directory: ./frontend
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Build Frontend
         working-directory: ./frontend
