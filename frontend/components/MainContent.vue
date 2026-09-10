@@ -244,7 +244,7 @@ function handleToggleTask(task: Task) {
             v-else-if="taskStore.activeTasks.length === 0"
             class="p-8 text-center apple-glass-panel rounded-2xl text-xs text-slate-500"
           >
-            Toutes les tâches actives sont terminées ! ✨
+            Toutes les tâches actives sont terminées !
           </div>
 
           <div v-else class="space-y-2">

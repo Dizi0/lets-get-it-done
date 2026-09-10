@@ -302,7 +302,7 @@ function renderSimpleMarkdown(rawText: string): string {
               class="w-full px-3.5 py-2.5 apple-glass-input rounded-xl text-xs placeholder-slate-400 font-mono focus:outline-none resize-y leading-relaxed"
             ></textarea>
             <p class="text-[10px] text-slate-400 mt-1">
-              💡 Supporte les titres (#), le gras (**texte**), le code (`inline`) et les cases à cocher ([ ] ou [x]).
+              Supporte les titres (#), le gras (**texte**), le code (`inline`) et les cases à cocher ([ ] ou [x]).
             </p>
           </div>
 

@@ -2,11 +2,20 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
+import helmet from 'helmet';
 import { AppModule } from './app.module.js';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter.js';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // Security Headers via Helmet
+  app.use(
+    helmet({
+      crossOriginResourcePolicy: false,
+      contentSecurityPolicy: false, // Allows Swagger UI to render smoothly in dev/docs
+    }),
+  );
 
   // Global Prefix
   app.setGlobalPrefix('api');
@@ -60,8 +69,9 @@ async function bootstrap() {
 
   const port = process.env.BACKEND_PORT || process.env.PORT || 3001;
   await app.listen(port);
-  console.log(`🚀 Application running on: http://localhost:${port}/api`);
-  console.log(`📚 Swagger documentation at: http://localhost:${port}/api/docs`);
+  console.log(`Application running on: http://localhost:${port}/api`);
+  console.log(`Swagger documentation at: http://localhost:${port}/api/docs`);
 }
 await bootstrap();
+
 

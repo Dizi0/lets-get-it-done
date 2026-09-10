@@ -41,7 +41,7 @@ export function useSocket() {
 
     socketInstance.on('connect', () => {
       isConnecting = false;
-      console.log('⚡ Connected to WebSocket server:', socketInstance?.id);
+      console.log('[WebSocket] Connected to server:', socketInstance?.id);
       if (listStore.currentListId) {
         joinRoom(listStore.currentListId);
       }
@@ -49,13 +49,13 @@ export function useSocket() {
 
     socketInstance.on('disconnect', (reason) => {
       isConnecting = false;
-      console.log('🔌 WebSocket disconnected:', reason);
+      console.log('[WebSocket] Disconnected:', reason);
       currentJoinedRoom = null;
     });
 
     socketInstance.on('connect_error', async (err) => {
       isConnecting = false;
-      console.warn('⚠️ WebSocket connection notice:', err.message);
+      console.warn('[WebSocket] Connection notice:', err.message);
       // Try refreshing access token once if rejected
       if (authStore.isAuthenticated) {
         const newToken = await authStore.refreshAccessToken();
